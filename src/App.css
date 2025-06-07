@@ -1,11 +1,9 @@
 .App {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 80px; /* Header height + margin */
-  height: 100vh;
+  padding: 80px 40px 40px; /* 상단 80px, 좌우 40px, 하단 40px */
   background-color: #f0f2f5;
   font-family: Arial, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .App-logo {

@@ -1,29 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+// import { db } from '../firebase';
+// import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import './Main.css';
 
 function Main() {
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        const q = query(collection(db, "documents"), orderBy("createdAt", "desc"));
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const docs = [];
-            querySnapshot.forEach((doc) => {
-                docs.push({ id: doc.id, ...doc.data() });
-            });
-            setDocuments(docs);
-            setLoading(false);
-        });
+        const fetchDocuments = async () => {
+            try {
+                setLoading(true);
+                setError('');
+                const response = await fetch('http://localhost:3001/documents');
+                if (!response.ok) {
+                    throw new Error('데이터를 불러오는데 실패했습니다.');
+                }
+                const data = await response.json();
+                setDocuments(data);
+            } catch (err) {
+                setError(err.message);
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        return () => unsubscribe();
+        fetchDocuments();
     }, []);
 
     if (loading) {
         return <div>문서 목록을 불러오는 중...</div>
+    }
+
+    if (error) {
+        return <div>{error}</div>;
     }
 
     return (

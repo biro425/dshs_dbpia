@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db, storage, auth } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth } from '../firebase';
+// import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+// import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './Write.css';
 
 function Write() {
@@ -26,31 +26,36 @@ function Write() {
         setLoading(true);
         setError('');
 
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('title', title);
+        formData.append('description', description);
+        
+        if (auth.currentUser) {
+            formData.append('authorUid', auth.currentUser.uid);
+            formData.append('authorName', auth.currentUser.displayName);
+            formData.append('authorEmail', auth.currentUser.email);
+        }
+
+
         try {
-            // 1. 파일을 Storage에 업로드
-            const fileRef = ref(storage, `documents/${Date.now()}_${file.name}`);
-            await uploadBytes(fileRef, file);
-
-            // 2. 업로드된 파일의 URL 가져오기
-            const fileURL = await getDownloadURL(fileRef);
-
-            // 3. Firestore에 문서 데이터 저장
-            await addDoc(collection(db, 'documents'), {
-                title: title,
-                description: description,
-                fileURL: fileURL,
-                fileName: file.name,
-                authorUid: auth.currentUser.uid,
-                authorName: auth.currentUser.displayName,
-                authorEmail: auth.currentUser.email,
-                createdAt: serverTimestamp()
+            const response = await fetch('http://localhost:3001/upload', {
+                method: 'POST',
+                body: formData,
             });
 
+            if (!response.ok) {
+                throw new Error('서버에서 업로드에 실패했습니다.');
+            }
+
+            const result = await response.json();
+            console.log('Upload Success:', result);
+
             setLoading(false);
-            navigate('/'); // 메인 페이지로 이동
+            navigate('/'); // 성공 시 메인 페이지로 이동
 
         } catch (err) {
-            setError('문서 작성 중 오류가 발생했습니다.');
+            setError(`문서 작성 중 오류가 발생했습니다: ${err.message}`);
             console.error(err);
             setLoading(false);
         }
