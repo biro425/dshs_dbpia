@@ -1,0 +1,48 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import './Main.css';
+
+function Main() {
+    const [documents, setDocuments] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const q = query(collection(db, "documents"), orderBy("createdAt", "desc"));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const docs = [];
+            querySnapshot.forEach((doc) => {
+                docs.push({ id: doc.id, ...doc.data() });
+            });
+            setDocuments(docs);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    if (loading) {
+        return <div>문서 목록을 불러오는 중...</div>
+    }
+
+    return (
+        <div className="main-container">
+            <h2>문서 목록</h2>
+            <div className="document-list">
+                {documents.length > 0 ? (
+                    documents.map(doc => (
+                        <Link to={`/document/${doc.id}`} key={doc.id} className="document-item">
+                            <h3>{doc.title}</h3>
+                            <p>작성자: {doc.authorName}</p>
+                        </Link>
+                    ))
+                ) : (
+                    <p>작성된 문서가 없습니다.</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default Main; 

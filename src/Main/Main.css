@@ -1,0 +1,30 @@
+.main-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.document-list {
+    margin-top: 20px;
+}
+
+.document-item {
+    display: block;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.3s;
+}
+
+.document-item:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.document-item h3 {
+    margin-top: 0;
+} 

@@ -1,0 +1,29 @@
+.document-view-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.document-meta {
+    margin-bottom: 20px;
+    color: #555;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.document-meta p {
+    margin: 4px 0;
+}
+
+.document-description {
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.file-viewer {
+    border: 1px solid #eee;
+} 

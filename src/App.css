@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 80px; /* Header height + margin */
   height: 100vh;
   background-color: #f0f2f5;
   font-family: Arial, sans-serif;
@@ -40,4 +41,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 20px;
 }
